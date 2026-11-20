@@ -684,7 +684,17 @@ func hydrateTLSRuleAPI(ctx context.Context, plan InspectionRule) (hydrateTLSAPIT
 				ruleApplicationUpdateInput.Country = make([]*cato_models.CountryRefInput, 0)
 			}
 
-			// TODO: Add custom_service, custom_service_ip, and tls_inspect_category if needed
+			// setting application.tls_inspect_category
+			if !applicationInput.TLSInspectCategory.IsUnknown() && !applicationInput.TLSInspectCategory.IsNull() {
+				ruleApplicationInput.TLSInspectCategory = []cato_models.TLSInspectSystemCategory{
+					cato_models.TLSInspectSystemCategory(applicationInput.TLSInspectCategory.ValueString()),
+				}
+				ruleApplicationUpdateInput.TLSInspectCategory = ruleApplicationInput.TLSInspectCategory
+			} else {
+				ruleApplicationUpdateInput.TLSInspectCategory = make([]cato_models.TLSInspectSystemCategory, 0)
+			}
+
+			// TODO: Add custom_service and custom_service_ip if needed
 			// These fields are in the schema but may require additional implementation
 
 			rootAddRule.Application = ruleApplicationInput

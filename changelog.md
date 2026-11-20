@@ -15,6 +15,7 @@
 - `cato_socket_site` / `cato_app_connector`: the platform's location-resolution service intermittently rejects known cities (`City [Paris] is unknown`, `Cannot resolve location for city 'New York'`, both `DOWNSTREAM_SERVICE_ERROR`) — the same requests succeeded on earlier runs with identical inputs.
 
 ### Fixes
+- `cato_tls_rule`: `rule.application.tls_inspect_category` is now sent to the API on create and update. Previously the value was kept in state only, so a rule matching on the category alone matched every destination.
 - `cato_socket_site`: `site_location.state_code` is now Computed with `UseStateForUnknown`, and an omitted `state_code` stays null in state instead of absorbing the API-resolved value — fixes "Provider produced inconsistent result after apply" when the config omits it.
 - `cato_network_range`: an omitted `dhcp_settings` block now stays `ACCOUNT_DEFAULT` in state instead of being overwritten with the API-resolved values — fixes inconsistent `dhcp_type`/`dhcp_microsegmentation` results after apply.
 - `cato_network_range` / `cato_socket_site`: `mdns_reflector` no longer defaults to `false`. An omitted value stays null and is not sent to the API, which previously caused "mDNS reflector is not supported for this network range configuration" on Routed ranges. **Behavior change** for configurations that relied on the implicit `false` default — set `mdns_reflector = false` explicitly to keep the old input.
